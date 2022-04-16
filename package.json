@@ -8,7 +8,14 @@
   "main": "dist/index.umd.js",
   "types": "types/index.d.ts",
   "module": "dist/index.es.js",
-  "repository": "lifeisegg123/react-query-toolkit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifeisegg123/react-query-toolkit"
+  },
+  "bugs": {
+    "url": "https://github.com/lifeisegg123/react-query-toolkit/issues"
+  },
+  "license": "MIT",
   "keywords": [
     "react",
     "query",
@@ -16,6 +23,10 @@
     "toolkit",
     "query-toolkit",
     "react-query-toolkit"
+  ],
+  "files": [
+    "dist/",
+    "types/"
   ],
   "scripts": {
     "dev": "vite",
