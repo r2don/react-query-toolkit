@@ -36,16 +36,16 @@ describe("createMutationToolkit", () => {
 
   it("should indicate proper isMutating", async () => {
     const { result } = customRenderHook(() => mockApiMutation.useMutation());
+
+    expect(mockApiMutation.isMutating()).toBe(0);
+
+    result.current.mutateAsync(1);
+
     const { result: result1 } = customRenderHook(() =>
       mockApiMutation.useIsMutating(),
     );
 
-    expect(mockApiMutation.isMutating()).toBe(0);
-    expect(result1.current).toBe(0);
-
-    result.current.mutateAsync(1);
-
     expect(mockApiMutation.isMutating()).toBe(1);
-    // expect(result1.current).toBe(1); // FIXME: this test case must be true
+    expect(result1.current).toBe(1);
   });
 });
