@@ -33,7 +33,7 @@
     "build": "tsc && vite build",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "coverage": "vitest run --coverage",
+    "cov": "vitest run --coverage",
     "lint": "eslint ."
   },
   "devDependencies": {
