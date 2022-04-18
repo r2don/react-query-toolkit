@@ -16,7 +16,7 @@ describe("createQueryToolkit/query", () => {
 
     it("could be used with useQuery", async () => {
       const { result, waitFor } = customRenderHook(() =>
-        simpleApiQuery.useQuery([], { queryKey: ["useQuery"] })
+        simpleApiQuery.useQuery([], { queryKey: ["useQuery"] }),
       );
       await waitFor(() => result.current.isSuccess);
 
@@ -28,7 +28,7 @@ describe("createQueryToolkit/query", () => {
         simpleApiQuery.useQuery([], {
           select: (data) => data[0].text,
           queryKey: ["select"],
-        })
+        }),
       );
       await waitFor(() => result.current.isSuccess);
 
@@ -65,7 +65,7 @@ describe("createQueryToolkit/query", () => {
       const { result } = customRenderHook(() =>
         simpleApiQuery.useQuery([], {
           queryKey: ["prefetch"],
-        })
+        }),
       );
 
       expect(result.current.isLoading).toEqual(false);
@@ -76,17 +76,17 @@ describe("createQueryToolkit/query", () => {
       const { result } = customRenderHook(() =>
         simpleApiQuery.useQuery([], {
           queryKey: ["isFetching1"],
-        })
+        }),
       );
 
       customRenderHook(() =>
         simpleApiQuery.useQuery([], {
           queryKey: ["isFetching2"],
-        })
+        }),
       );
 
       const { result: isFetchingResult } = customRenderHook(() =>
-        simpleApiQuery.useIsFetching()
+        simpleApiQuery.useIsFetching(),
       );
 
       expect(result.current.isFetching).toEqual(true);
@@ -102,7 +102,7 @@ describe("createQueryToolkit/query", () => {
           { text: "2", id: 2 },
           { text: "3", id: 3 },
           { text: "4", id: 4 },
-        ].find((item) => item.id === id)
+        ].find((item) => item.id === id),
       );
     };
 
@@ -110,7 +110,7 @@ describe("createQueryToolkit/query", () => {
 
     it("should pass args to api func", async () => {
       const { result, waitFor } = customRenderHook(() =>
-        argApiQuery.useQuery([1])
+        argApiQuery.useQuery([1]),
       );
       await waitFor(() => result.current.isSuccess);
 
@@ -136,10 +136,10 @@ describe("createQueryToolkit/query", () => {
 
     it("should pass proper queryKey by args", async () => {
       const { result: query1Res, waitFor: wait1 } = customRenderHook(() =>
-        argApiQuery.useQuery([1])
+        argApiQuery.useQuery([1]),
       );
       const { result: query2Res, waitFor: wait2 } = customRenderHook(() =>
-        argApiQuery.useQuery([2])
+        argApiQuery.useQuery([2]),
       );
 
       await wait1(() => query1Res.current.isSuccess);
@@ -152,16 +152,70 @@ describe("createQueryToolkit/query", () => {
         passArgsToQueryKey: false,
       });
       const { result: query1Res, waitFor: wait1 } = customRenderHook(() =>
-        queryNotPassArgsToQueryKey.useQuery([1])
+        queryNotPassArgsToQueryKey.useQuery([1]),
       );
       const { result: query2Res, waitFor: wait2 } = customRenderHook(() =>
-        queryNotPassArgsToQueryKey.useQuery([2])
+        queryNotPassArgsToQueryKey.useQuery([2]),
       );
 
       await wait1(() => query1Res.current.isSuccess);
       await wait2(() => query2Res.current.isSuccess);
 
       expect(query1Res.current.data).toEqual(query2Res.current.data);
+    });
+  });
+  describe("with default options", () => {
+    const mockData = [
+      { text: "123", id: 1 },
+      { text: "456", id: 2 },
+    ];
+    const initialData = [{ text: "initialData", id: 3 }];
+    let errorCount = 0;
+
+    const defaultOptionApi = () => () => {
+      if (errorCount++ < 2) throw new Error("error");
+      return Promise.resolve(mockData);
+    };
+
+    const defaultOptionQuery = queryToolkit(["simpleApi"], defaultOptionApi, {
+      defaultOptions: {
+        initialData,
+        enabled: false,
+        retry: 1,
+        retryDelay: 10,
+      },
+    });
+
+    it("should not fetch data", () => {
+      const { result } = customRenderHook(() => defaultOptionQuery.useQuery());
+      expect(result.current.isLoading).toEqual(false);
+    });
+
+    it("should have initial data", () => {
+      const { result } = customRenderHook(() => defaultOptionQuery.useQuery());
+      expect(result.current.data).toEqual(initialData);
+    });
+
+    it("should throw error", async () => {
+      const { result, waitFor } = customRenderHook(() =>
+        defaultOptionQuery.useQuery([], { enabled: true }),
+      );
+      expect(result.current.isFetching).toEqual(true);
+
+      await waitFor(() => result.current.isError);
+      expect(result.current.data).toEqual(initialData);
+      expect(result.current.isError).toEqual(true);
+    });
+
+    it("should get data", async () => {
+      const { result, waitFor } = customRenderHook(() =>
+        defaultOptionQuery.useQuery([]),
+      );
+      expect(result.current.isFetching).toEqual(false);
+      const data = await result.current.refetch();
+
+      await waitFor(() => !result.current.isFetching);
+      expect(data.data).toEqual(mockData);
     });
   });
 });

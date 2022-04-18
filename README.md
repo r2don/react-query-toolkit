@@ -114,6 +114,7 @@ function AnotherExampleComponent () {
   - returns a function that will return a queryToolkit instance
 
 ***
+<br>
 
 ### createQuery
 
@@ -137,6 +138,8 @@ function AnotherExampleComponent () {
     - Defaults to `'query'`
     - if set to `'query'`, `QueryToolkit` will have `useQuery`, `fetchQuery`, `prefetchQuery` methods.
     - if set to `'infiniteQuery'`, `QueryToolkit` will have `useInfiniteQuery`, `fetchInfiniteQuery`, `prefetchInfiniteQuery` methods.
+  - `defaultOptions: QueryOptions & UseQueryOptions & UseInfiniteQueryOptions`
+    - same option as react-query's query options [check out here](https://react-query.tanstack.com/reference/useQuery)
 
 #### returns
 
@@ -144,6 +147,8 @@ function AnotherExampleComponent () {
   - will Return a `QueryClient` instance
 
 ***
+<br>
+
 ### createMutationToolkit
 
 #### parameters
@@ -156,7 +161,12 @@ function AnotherExampleComponent () {
 - `createMutaion: (queryKey, queryFn, options) => QueryToolkit`
   - returns a function that will return a mutationToolkit instance
 
+
+***
+<br>
+
 ### createMutation
+
 #### parameters
 
 - `mutationKey: MutationKey`

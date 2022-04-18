@@ -8,36 +8,73 @@ import {
 import { generateKey } from "./internal/generateKey";
 import { returnByCondition } from "./internal/returnByCondition";
 import {
+  QueryDefaultOption,
+  QueryType,
+  TQueryFunction,
+  UseInfiniteQueryDefaultOption,
+  UseQueryDefaultOption,
+} from "./types/query";
+import {
   QueryToolkit,
   QueryToolkitInfiniteQueryType,
   QueryToolkitQueryType,
-  QueryType,
-  TQueryFunction,
-} from "./types/query";
+} from "./types/queryToolkit";
 
 export function createQueryToolkit(queryClient: QueryClient) {
-  function createQuery<TQueryFnArgs extends unknown[], TQueryFnReturn>(
+  function createQuery<
+    TQueryFnArgs extends unknown[],
+    TQueryFnReturn,
+    TData = TQueryFnReturn,
+  >(
     queryKey: QueryKey,
     queryFn: TQueryFunction<TQueryFnArgs, TQueryFnReturn>,
-    options?: { passArgsToQueryKey?: boolean; queryType?: "query" },
+    options?: {
+      passArgsToQueryKey?: boolean;
+      queryType?: "query";
+      defaultOptions?: QueryDefaultOption<TQueryFnReturn, TData> &
+        UseQueryDefaultOption<TQueryFnReturn, TData>;
+    },
   ): Omit<
-    QueryToolkitQueryType<TQueryFnArgs, TQueryFnReturn, Error>,
+    QueryToolkitQueryType<TQueryFnArgs, TQueryFnReturn, Error, TData>,
     "useInfiniteQuery" | "fetchInfiniteQuery" | "prefetchInfiniteQuery"
   >;
-  function createQuery<TQueryFnArgs extends unknown[], TQueryFnReturn>(
+  function createQuery<
+    TQueryFnArgs extends unknown[],
+    TQueryFnReturn,
+    TData = TQueryFnReturn,
+  >(
     queryKey: QueryKey,
     queryFn: TQueryFunction<TQueryFnArgs, TQueryFnReturn>,
-    options?: { passArgsToQueryKey?: boolean; queryType?: "infiniteQuery" },
+    options?: {
+      passArgsToQueryKey?: boolean;
+      queryType?: "infiniteQuery";
+      defaultOptions?: QueryDefaultOption<TQueryFnReturn, TData> &
+        UseInfiniteQueryDefaultOption<TQueryFnReturn, TData>;
+    },
   ): Omit<
-    QueryToolkitInfiniteQueryType<TQueryFnArgs, TQueryFnReturn, Error>,
+    QueryToolkitInfiniteQueryType<TQueryFnArgs, TQueryFnReturn, Error, TData>,
     "useQuery" | "fetchQuery" | "prefetchQuery"
   >;
-  function createQuery<TQueryFnArgs extends unknown[], TQueryFnReturn>(
+  function createQuery<
+    TQueryFnArgs extends unknown[],
+    TQueryFnReturn,
+    TData = TQueryFnReturn,
+  >(
     queryKey: QueryKey,
     queryFn: TQueryFunction<TQueryFnArgs, TQueryFnReturn>,
-    options: { passArgsToQueryKey?: boolean; queryType?: QueryType } = {},
+    options: {
+      passArgsToQueryKey?: boolean;
+      queryType?: QueryType;
+      defaultOptions?: QueryDefaultOption<TQueryFnReturn, TData> &
+        UseQueryDefaultOption<TQueryFnReturn, TData> &
+        UseInfiniteQueryDefaultOption<TQueryFnReturn, TData>;
+    } = {},
   ) {
-    const { passArgsToQueryKey = true, queryType = "query" } = options;
+    const {
+      passArgsToQueryKey = true,
+      queryType = "query",
+      defaultOptions,
+    } = options;
 
     const isInfiniteQuery = queryType === "infiniteQuery";
     const returnOnQuery = returnByCondition(!isInfiniteQuery);
@@ -55,7 +92,7 @@ export function createQueryToolkit(queryClient: QueryClient) {
         hook(
           getKey(queryOptions?.queryKey, args),
           queryFn(...((args || []) as TQueryFnArgs)),
-          queryOptions,
+          { ...defaultOptions, ...queryOptions },
         );
 
     const hooks: Partial<
@@ -78,7 +115,7 @@ export function createQueryToolkit(queryClient: QueryClient) {
         (queryClient as any)[path](
           getKey(options?.queryKey, args),
           queryFn(...args),
-          options,
+          { ...defaultOptions, ...options },
         ),
       );
 
@@ -110,12 +147,17 @@ export function createQueryToolkit(queryClient: QueryClient) {
 
     if (isInfiniteQuery)
       return handler as Omit<
-        QueryToolkitInfiniteQueryType<TQueryFnArgs, TQueryFnReturn, Error>,
+        QueryToolkitInfiniteQueryType<
+          TQueryFnArgs,
+          TQueryFnReturn,
+          Error,
+          TData
+        >,
         "useQuery" | "fetchQuery" | "prefetchQuery"
       >;
 
     return handler as Omit<
-      QueryToolkitQueryType<TQueryFnArgs, TQueryFnReturn, Error>,
+      QueryToolkitQueryType<TQueryFnArgs, TQueryFnReturn, Error, TData>,
       "useInfiniteQuery" | "fetchInfiniteQuery" | "prefetchInfiniteQuery"
     >;
   }

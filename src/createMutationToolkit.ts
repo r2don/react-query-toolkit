@@ -8,7 +8,7 @@ import {
 } from "react-query";
 import { MutationFilters } from "react-query/types/core/utils";
 import { generateKey } from "./internal/generateKey";
-import { MutationToolkit } from "./types/mutation";
+import { MutationToolkit } from "./types/mutationToolkit";
 
 export function createMutationToolkit(queryClient: QueryClient) {
   function createMutation<TMutationFnArgs, TMutationFnReturn, TContext>(
