@@ -51,10 +51,10 @@ export function createQueryToolkit(queryClient: QueryClient) {
       ]);
 
     const handleHooks =
-      (hook: any) => (args: TQueryFnArgs, queryOptions: any) =>
+      (hook: any) => (args?: TQueryFnArgs, queryOptions?: any) =>
         hook(
           getKey(queryOptions?.queryKey, args),
-          queryFn(...args),
+          queryFn(...((args || []) as TQueryFnArgs)),
           queryOptions,
         );
 
@@ -67,7 +67,7 @@ export function createQueryToolkit(queryClient: QueryClient) {
       useQuery: returnOnQuery(handleHooks(useQuery)),
       useInfiniteQuery: returnOnInfiniteQuery(handleHooks(useInfiniteQuery)),
       useIsFetching: (filters) =>
-        useIsFetching(keyGenerator(filters?.queryKey), filters),
+        useIsFetching(getKey(filters?.queryKey), filters),
     };
 
     const handleFetchFunctions = (
@@ -98,7 +98,7 @@ export function createQueryToolkit(queryClient: QueryClient) {
           case "getQueryState":
           case "setQueryData":
             return (queryKey: any, ...rest: any) =>
-              (queryClient as any)[path](keyGenerator(queryKey), ...rest);
+              (queryClient as any)[path](getKey(queryKey), ...rest);
 
           default:
             if (!(queryClient as any)[path])

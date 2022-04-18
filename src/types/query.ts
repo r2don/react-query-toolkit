@@ -28,38 +28,38 @@ export type TQueryFunction<TQueryFnArgs extends unknown[], TQueryFnReturn> = (
 interface QueryToolkitBase<
   TQueryFnData = unknown,
   TError = unknown,
-  TData = TQueryFnData
+  TData = TQueryFnData,
 > {
   getQueryData(queryKey?: QueryKey, filters?: QueryFilters): TData | undefined;
   getQueryState(
     queryKey?: QueryKey,
-    filters?: QueryFilters
+    filters?: QueryFilters,
   ): QueryState<TData, TError> | undefined;
   setQueryData(
     queryKey: QueryKey,
     updater: Updater<TData | undefined, TData | undefined>,
-    options?: SetDataOptions
+    options?: SetDataOptions,
   ): TData;
   getQueriesData(filters?: QueryFilters): [QueryKey, TData][];
   setQueriesData(
     filters: QueryFilters,
     updater: Updater<TData | undefined, TData | undefined>,
-    options?: SetDataOptions
+    options?: SetDataOptions,
   ): [QueryKey, TData][];
 
   invalidateQueries<TPageData = unknown>(
     filters?: InvalidateQueryFilters<TPageData>,
-    options?: InvalidateOptions
+    options?: InvalidateOptions,
   ): Promise<void>;
   refetchQueries<TPageData = unknown>(
     filters?: RefetchQueryFilters<TPageData>,
-    options?: RefetchOptions
+    options?: RefetchOptions,
   ): Promise<void>;
   cancelQueries(filters?: QueryFilters, options?: CancelOptions): Promise<void>;
   removeQueries(filters?: QueryFilters): void;
   resetQueries<TPageData = unknown>(
     filters?: ResetQueryFilters<TPageData>,
-    options?: ResetOptions
+    options?: ResetOptions,
   ): Promise<void>;
 
   isFetching(filters?: QueryFilters): number;
@@ -70,22 +70,22 @@ export interface QueryToolkitQueryType<
   TQueryFnArgs extends unknown[] = [],
   TQueryFnData = unknown,
   TError = unknown,
-  TData = TQueryFnData
+  TData = TQueryFnData,
 > extends QueryToolkitBase<TQueryFnData, TError, TData> {
   fetchInfiniteQuery: undefined;
   prefetchInfiniteQuery: undefined;
   useInfiniteQuery: undefined;
   fetchQuery<TReturn = TData>(
     args: TQueryFnArgs,
-    options?: Omit<FetchQueryOptions<TQueryFnData, TError, TReturn>, "queryFn">
+    options?: Omit<FetchQueryOptions<TQueryFnData, TError, TReturn>, "queryFn">,
   ): Promise<TReturn>;
   prefetchQuery(
     args: TQueryFnArgs,
-    options?: Omit<FetchQueryOptions<TQueryFnData, TError>, "queryFn">
+    options?: Omit<FetchQueryOptions<TQueryFnData, TError>, "queryFn">,
   ): Promise<void>;
   useQuery<TReturn = TData>(
     args: TQueryFnArgs,
-    options?: Omit<UseQueryOptions<TQueryFnData, TError, TReturn>, "queryFn">
+    options?: Omit<UseQueryOptions<TQueryFnData, TError, TReturn>, "queryFn">,
   ): UseQueryResult<TReturn, TError>;
 }
 
@@ -93,7 +93,7 @@ export interface QueryToolkitInfiniteQueryType<
   TQueryFnArgs extends unknown[] = [],
   TQueryFnData = unknown,
   TError = unknown,
-  TData = TQueryFnData
+  TData = TQueryFnData,
 > extends QueryToolkitBase<TQueryFnData, TError, TData> {
   fetchQuery: undefined;
   prefetchQuery: undefined;
@@ -103,18 +103,18 @@ export interface QueryToolkitInfiniteQueryType<
     options?: Omit<
       FetchInfiniteQueryOptions<TQueryFnData, TError, TReturn>,
       "queryFn"
-    >
+    >,
   ): Promise<InfiniteData<TReturn>>;
   prefetchInfiniteQuery(
     args: TQueryFnArgs,
-    options?: Omit<FetchQueryOptions<TQueryFnData, TError>, "queryFn">
+    options?: Omit<FetchQueryOptions<TQueryFnData, TError>, "queryFn">,
   ): Promise<void>;
   useInfiniteQuery<TReturn = TData>(
     args: TQueryFnArgs,
     options?: Omit<
       UseInfiniteQueryOptions<TQueryFnData, TError, TReturn>,
       "queryFn"
-    >
+    >,
   ): UseInfiniteQueryResult<TReturn, TError>;
 }
 
@@ -122,7 +122,7 @@ export type QueryToolkit<
   TQueryFnArgs extends unknown[] = [],
   TQueryFnData = unknown,
   TError = unknown,
-  TData = TQueryFnData
+  TData = TQueryFnData,
 > =
   | QueryToolkitQueryType<TQueryFnArgs, TQueryFnData, TError, TData>
   | QueryToolkitInfiniteQueryType<TQueryFnArgs, TQueryFnData, TError, TData>;
