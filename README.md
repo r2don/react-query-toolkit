@@ -2,10 +2,12 @@
 
 > note: This library is in WIP stage. I would not recommend using it in production.
 
-## introduction
+## Introduction
 This library helps you to use [React-Query](https://react-query.tanstack.com/) much easier.
 It provides two functions. `createQueryToolkit` for queries, `createMutationToolkit` for mutations.
 These functions allows you to less concern about how to manage query key or api functions, and prevent you from writing same code(`eg. give same options to useQuery & prefetchQuery`) for queries or mutations.
+
+Any type of contribution(pr, issue, etc...) is welcome.
 
 ## Installation
 
@@ -111,7 +113,7 @@ function AnotherExampleComponent () {
 #### returns
 
 - `createQuery: (queryKey, queryFn, options) => QueryToolkit`
-  - returns a function that will return a queryToolkit instance
+  - returns a function that will return a instance of `QueryToolkit`
 
 ***
 <br>
@@ -144,7 +146,7 @@ function AnotherExampleComponent () {
 #### returns
 
 - `QueryToolkit`
-  - will Return a `QueryClient` instance
+  - will Return a instance of `QueryToolkit`
 
 ***
 <br>
@@ -158,8 +160,8 @@ function AnotherExampleComponent () {
   - queryClient instance
 
 #### returns
-- `createMutaion: (queryKey, queryFn, options) => QueryToolkit`
-  - returns a function that will return a mutationToolkit instance
+- `createMutation: (queryKey, queryFn, options) => MutationToolkit`
+  - returns a function that will return a instance of `MutationToolkit` 
 
 
 ***
@@ -183,4 +185,4 @@ function AnotherExampleComponent () {
   
 #### returns
 - `MutationToolkit`
-  - will Return a `MutationToolkit` instance
+  - return a instance of `MutationToolkit`
