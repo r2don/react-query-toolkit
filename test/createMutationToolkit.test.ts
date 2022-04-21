@@ -1,5 +1,4 @@
-import { vi } from "vitest";
-import { expect, it, describe } from "vitest";
+import { vi, expect, it, describe } from "vitest";
 
 import { createMutationToolkit } from "../src/createMutationToolkit";
 import { customRenderHook, mockQueryClient } from "./utils";
