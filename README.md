@@ -1,5 +1,5 @@
 # react-query-toolkit
-
+[![codecov](https://codecov.io/gh/lifeisegg123/react-query-toolkit/branch/main/graph/badge.svg?token=YQ37N8E2R3)](https://codecov.io/gh/lifeisegg123/react-query-toolkit)
 > note: This library is in WIP stage. I would not recommend using it in production.
 
 ## Introduction
