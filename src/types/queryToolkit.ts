@@ -18,6 +18,12 @@ import {
 } from "react-query";
 import { QueryState } from "react-query/types/core/query";
 import { QueryFilters, Updater } from "react-query/types/core/utils";
+import {
+  QueryDefaultOption,
+  TQueryFunction,
+  UseInfiniteQueryDefaultOption,
+  UseQueryDefaultOption,
+} from "./query";
 
 interface QueryToolkitBase<
   TQueryFnData = unknown,
@@ -120,3 +126,32 @@ export type QueryToolkit<
 > =
   | QueryToolkitQueryType<TQueryFnArgs, TQueryFnData, TError, TData>
   | QueryToolkitInfiniteQueryType<TQueryFnArgs, TQueryFnData, TError, TData>;
+
+export interface QueryCreator {
+  <TQueryFnArgs extends unknown[], TQueryFnReturn, TData = TQueryFnReturn>(
+    queryKey: QueryKey,
+    queryFn: TQueryFunction<TQueryFnArgs, TQueryFnReturn>,
+    options?: {
+      passArgsToQueryKey?: boolean;
+      queryType?: "query";
+      defaultOptions?: QueryDefaultOption<TQueryFnReturn, TData> &
+        UseQueryDefaultOption<TQueryFnReturn, TData>;
+    },
+  ): Omit<
+    QueryToolkitQueryType<TQueryFnArgs, TQueryFnReturn, Error, TData>,
+    "useInfiniteQuery" | "fetchInfiniteQuery" | "prefetchInfiniteQuery"
+  >;
+  <TQueryFnArgs extends unknown[], TQueryFnReturn, TData = TQueryFnReturn>(
+    queryKey: QueryKey,
+    queryFn: TQueryFunction<TQueryFnArgs, TQueryFnReturn>,
+    options?: {
+      passArgsToQueryKey?: boolean;
+      queryType?: "infiniteQuery";
+      defaultOptions?: QueryDefaultOption<TQueryFnReturn, TData> &
+        UseInfiniteQueryDefaultOption<TQueryFnReturn, TData>;
+    },
+  ): Omit<
+    QueryToolkitInfiniteQueryType<TQueryFnArgs, TQueryFnReturn, Error, TData>,
+    "useQuery" | "fetchQuery" | "prefetchQuery"
+  >;
+}
