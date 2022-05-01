@@ -1,3 +1,4 @@
+import { waitFor } from "@testing-library/react";
 import { expect, it, describe } from "vitest";
 
 import { createQueryToolkit } from "../../src/createQueryToolkit";
@@ -15,24 +16,25 @@ describe("createQueryToolkit/query", () => {
     const simpleApiQuery = queryToolkit(["simpleApi"], simpleApi);
 
     it("could be used with useQuery", async () => {
-      const { result, waitFor } = customRenderHook(() =>
+      const { result } = customRenderHook(() =>
         simpleApiQuery.useQuery([], { queryKey: ["useQuery"] }),
       );
-      await waitFor(() => result.current.isSuccess);
 
-      expect(result.current.data).toEqual(mockData);
+      await waitFor(async () => {
+        expect(result.current.data).toEqual(mockData);
+      });
     });
 
     it("could be used with select", async () => {
-      const { result, waitFor } = customRenderHook(() =>
+      const { result } = customRenderHook(() =>
         simpleApiQuery.useQuery([], {
           select: (data) => data[0].text,
           queryKey: ["select"],
         }),
       );
-      await waitFor(() => result.current.isSuccess);
-
-      expect(result.current.data).toEqual("123");
+      await waitFor(() => {
+        expect(result.current.data).toEqual("123");
+      });
     });
 
     it("can set query data", async () => {
@@ -109,14 +111,14 @@ describe("createQueryToolkit/query", () => {
     const argApiQuery = queryToolkit(["argApi"], argApi);
 
     it("should pass args to api func", async () => {
-      const { result, waitFor } = customRenderHook(() =>
-        argApiQuery.useQuery([1]),
-      );
-      await waitFor(() => result.current.isSuccess);
+      const { result } = customRenderHook(() => argApiQuery.useQuery([1]));
+
+      await waitFor(() => {
+        expect(result.current.data).toEqual({ text: "1", id: 1 });
+      });
 
       const data = argApiQuery.getQueryData([1]);
 
-      expect(result.current.data).toEqual({ text: "1", id: 1 });
       expect(data).toEqual({ text: "1", id: 1 });
 
       const fetchedData = await argApiQuery.fetchQuery([2]);
@@ -135,33 +137,32 @@ describe("createQueryToolkit/query", () => {
     });
 
     it("should pass proper queryKey by args", async () => {
-      const { result: query1Res, waitFor: wait1 } = customRenderHook(() =>
+      const { result: query1Res } = customRenderHook(() =>
         argApiQuery.useQuery([1]),
       );
-      const { result: query2Res, waitFor: wait2 } = customRenderHook(() =>
+      const { result: query2Res } = customRenderHook(() =>
         argApiQuery.useQuery([2]),
       );
 
-      await wait1(() => query1Res.current.isSuccess);
-      await wait2(() => query2Res.current.isSuccess);
-      expect(query1Res.current.data).not.toEqual(query2Res.current.data);
+      await waitFor(() => {
+        expect(query1Res.current.data).not.toEqual(query2Res.current.data);
+      });
     });
 
     it("should not pass args to queryKey", async () => {
       const queryNotPassArgsToQueryKey = queryToolkit(["argApi"], argApi, {
         passArgsToQueryKey: false,
       });
-      const { result: query1Res, waitFor: wait1 } = customRenderHook(() =>
+      const { result: query1Res } = customRenderHook(() =>
         queryNotPassArgsToQueryKey.useQuery([1]),
       );
-      const { result: query2Res, waitFor: wait2 } = customRenderHook(() =>
+      const { result: query2Res } = customRenderHook(() =>
         queryNotPassArgsToQueryKey.useQuery([2]),
       );
 
-      await wait1(() => query1Res.current.isSuccess);
-      await wait2(() => query2Res.current.isSuccess);
-
-      expect(query1Res.current.data).toEqual(query2Res.current.data);
+      await waitFor(() => {
+        expect(query1Res.current.data).toEqual(query2Res.current.data);
+      });
     });
   });
   describe("with default options", () => {
@@ -197,25 +198,27 @@ describe("createQueryToolkit/query", () => {
     });
 
     it("should throw error", async () => {
-      const { result, waitFor } = customRenderHook(() =>
+      const { result } = customRenderHook(() =>
         defaultOptionQuery.useQuery([], { enabled: true }),
       );
-      expect(result.current.isFetching).toEqual(true);
 
-      await waitFor(() => result.current.isError);
-      expect(result.current.data).toEqual(initialData);
-      expect(result.current.isError).toEqual(true);
+      await waitFor(() => {
+        expect(result.current.data).toEqual(initialData);
+        expect(result.current.isError).toEqual(true);
+        expect(result.current.isFetching).toEqual(false);
+      });
     });
 
     it("should get data", async () => {
-      const { result, waitFor } = customRenderHook(() =>
+      const { result } = customRenderHook(() =>
         defaultOptionQuery.useQuery([]),
       );
       expect(result.current.isFetching).toEqual(false);
       const data = await result.current.refetch();
 
-      await waitFor(() => !result.current.isFetching);
-      expect(data.data).toEqual(mockData);
+      await waitFor(() => {
+        expect(data.data).toEqual(mockData);
+      });
     });
   });
 });
