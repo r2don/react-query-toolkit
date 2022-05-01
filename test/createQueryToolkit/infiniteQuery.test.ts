@@ -1,3 +1,4 @@
+import { waitFor } from "@testing-library/react";
 import { expect, it, describe } from "vitest";
 
 import { createQueryToolkit } from "../../src/createQueryToolkit";
@@ -21,40 +22,41 @@ describe("createQueryToolkit/infiniteQuery", () => {
           Promise.resolve(mockData.slice(pageParam, pageParam + 1)),
       {
         queryType: "infiniteQuery",
-      }
+      },
     );
 
     it("could be used with useInfiniteQuery", async () => {
-      const { result, waitFor } = customRenderHook(() =>
+      const { result } = customRenderHook(() =>
         simpleApiQuery.useInfiniteQuery([], {
           queryKey: ["useInfiniteQuery"],
           getNextPageParam: (_, allPages) => {
             return allPages.length;
           },
-        })
+        }),
       );
-      await waitFor(() => result.current.isSuccess);
 
-      expect(result.current.data).toEqual({
-        pages: [mockData.slice(0, 1)],
-        pageParams: [undefined],
+      await waitFor(() => {
+        expect(result.current.data).toEqual({
+          pages: [mockData.slice(0, 1)],
+          pageParams: [undefined],
+        });
       });
     });
 
     it("should get next page", async () => {
-      const { result, waitFor } = customRenderHook(() =>
+      const { result } = customRenderHook(() =>
         simpleApiQuery.useInfiniteQuery([], {
           queryKey: ["useInfiniteQuery"],
           getNextPageParam: (_, allPages) => {
             return allPages.length;
           },
-        })
+        }),
       );
-      await waitFor(() => result.current.isSuccess);
-
-      expect(result.current.data).toEqual({
-        pages: [mockData.slice(0, 1)],
-        pageParams: [undefined],
+      await waitFor(() => {
+        expect(result.current.data).toEqual({
+          pages: [mockData.slice(0, 1)],
+          pageParams: [undefined],
+        });
       });
 
       const { data } = await result.current.fetchNextPage();
@@ -66,7 +68,7 @@ describe("createQueryToolkit/infiniteQuery", () => {
     });
 
     it("could be used with select", async () => {
-      const { result, waitFor } = customRenderHook(() =>
+      const { result } = customRenderHook(() =>
         simpleApiQuery.useInfiniteQuery([], {
           select: (data) => ({
             pages: data.pages.map((v) => v.map((v) => v.text)),
@@ -76,13 +78,13 @@ describe("createQueryToolkit/infiniteQuery", () => {
             return allPages.length;
           },
           queryKey: ["select"],
-        })
+        }),
       );
-      await waitFor(() => result.current.isSuccess);
-
-      expect(result.current.data).toEqual({
-        pages: [["123"]],
-        pageParams: [undefined],
+      await waitFor(() => {
+        expect(result.current.data).toEqual({
+          pages: [["123"]],
+          pageParams: [undefined],
+        });
       });
     });
 
@@ -94,7 +96,7 @@ describe("createQueryToolkit/infiniteQuery", () => {
       const { result } = customRenderHook(() =>
         simpleApiQuery.useInfiniteQuery([], {
           queryKey: ["prefetch"],
-        })
+        }),
       );
 
       expect(result.current.isLoading).toEqual(false);
@@ -108,17 +110,17 @@ describe("createQueryToolkit/infiniteQuery", () => {
       const { result } = customRenderHook(() =>
         simpleApiQuery.useInfiniteQuery([], {
           queryKey: ["isFetching1"],
-        })
+        }),
       );
 
       customRenderHook(() =>
         simpleApiQuery.useInfiniteQuery([], {
           queryKey: ["isFetching2"],
-        })
+        }),
       );
 
       const { result: isFetchingResult } = customRenderHook(() =>
-        simpleApiQuery.useIsFetching()
+        simpleApiQuery.useIsFetching(),
       );
 
       expect(result.current.isFetching).toEqual(true);
@@ -140,23 +142,25 @@ describe("createQueryToolkit/infiniteQuery", () => {
           Promise.resolve(
             mockData
               .filter((v) => v.type === type)
-              .slice(pageParam, pageParam + 1)
+              .slice(pageParam, pageParam + 1),
           ),
-      { queryType: "infiniteQuery", passArgsToQueryKey: true }
+      { queryType: "infiniteQuery", passArgsToQueryKey: true },
     );
 
     it("should pass args to api func", async () => {
-      const { result, waitFor } = customRenderHook(() =>
-        argApiQuery.useInfiniteQuery(["a"])
+      const { result } = customRenderHook(() =>
+        argApiQuery.useInfiniteQuery(["a"]),
       );
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => {
+        expect(result.current.data).toEqual({
+          pages: [[{ text: "1", id: 1, type: "a" }]],
+          pageParams: [undefined],
+        });
+      });
 
       const data = argApiQuery.getQueryData(["a"]);
 
-      expect(result.current.data).toEqual({
-        pages: [[{ text: "1", id: 1, type: "a" }]],
-        pageParams: [undefined],
-      });
       expect(data).toEqual({
         pages: [[{ text: "1", id: 1, type: "a" }]],
         pageParams: [undefined],
@@ -171,16 +175,16 @@ describe("createQueryToolkit/infiniteQuery", () => {
     });
 
     it("should pass proper queryKey by args", async () => {
-      const { result: query1Res, waitFor: wait1 } = customRenderHook(() =>
-        argApiQuery.useInfiniteQuery(["a"])
+      const { result: query1Res } = customRenderHook(() =>
+        argApiQuery.useInfiniteQuery(["a"]),
       );
-      const { result: query2Res, waitFor: wait2 } = customRenderHook(() =>
-        argApiQuery.useInfiniteQuery(["b"])
+      const { result: query2Res } = customRenderHook(() =>
+        argApiQuery.useInfiniteQuery(["b"]),
       );
 
-      await wait1(() => query1Res.current.isSuccess);
-      await wait2(() => query2Res.current.isSuccess);
-      expect(query1Res.current.data).not.toEqual(query2Res.current.data);
+      await waitFor(() => {
+        expect(query1Res.current.data).not.toEqual(query2Res.current.data);
+      });
     });
 
     it("should not pass args to queryKey", async () => {
@@ -191,23 +195,22 @@ describe("createQueryToolkit/infiniteQuery", () => {
             Promise.resolve(
               mockData
                 .filter((v) => v.type === type)
-                .slice(pageParam, pageParam + 1)
+                .slice(pageParam, pageParam + 1),
             ),
         {
           passArgsToQueryKey: false,
-        }
+        },
       );
-      const { result: query1Res, waitFor: wait1 } = customRenderHook(() =>
-        queryNotPassArgsToQueryKey.useQuery(["a"])
+      const { result: query1Res } = customRenderHook(() =>
+        queryNotPassArgsToQueryKey.useQuery(["a"]),
       );
-      const { result: query2Res, waitFor: wait2 } = customRenderHook(() =>
-        queryNotPassArgsToQueryKey.useQuery(["b"])
+      const { result: query2Res } = customRenderHook(() =>
+        queryNotPassArgsToQueryKey.useQuery(["b"]),
       );
 
-      await wait1(() => query1Res.current.isSuccess);
-      await wait2(() => query2Res.current.isSuccess);
-
-      expect(query1Res.current.data).toEqual(query2Res.current.data);
+      await waitFor(() => {
+        expect(query1Res.current.data).toEqual(query2Res.current.data);
+      });
     });
   });
 });

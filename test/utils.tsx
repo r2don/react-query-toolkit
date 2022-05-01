@@ -1,6 +1,8 @@
 import React from "react";
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
+
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 export const mockQueryClient = new QueryClient({
   defaultOptions: {
@@ -16,9 +18,9 @@ const wrapper = ({ children }: { children?: any }) => (
 
 export const customRenderHook = <TProps, TResult>(
   hook: (props: TProps) => TResult,
-  options?
+  options?,
 ) => {
-  return renderHook<TProps, TResult>(hook, {
+  return renderHook<TResult, TProps>(hook, {
     ...options,
     wrapper,
   });
