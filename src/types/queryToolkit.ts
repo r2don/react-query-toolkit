@@ -16,8 +16,8 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from "react-query";
-import { QueryState } from "react-query/types/core/query";
-import { QueryFilters, Updater } from "react-query/types/core/utils";
+import { QueryState } from "react-query/lib/core/query";
+import { QueryFilters, Updater } from "react-query/lib/core/utils";
 import {
   QueryDefaultOption,
   TQueryFunction,
