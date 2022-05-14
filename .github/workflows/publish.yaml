@@ -4,7 +4,7 @@ on:
     types: [created]
 
 jobs:
-  build & publish:
+  publish:
     runs-on: ubuntu-latest
     strategy:
       matrix:
