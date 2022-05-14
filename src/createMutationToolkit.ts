@@ -5,6 +5,7 @@ import {
   useIsMutating,
   useMutation,
   UseMutationOptions,
+  defaultContext,
 } from "react-query";
 import { MutationFilters } from "react-query/types/core/utils";
 import { generateKey } from "./internal/generateKey";
@@ -33,6 +34,7 @@ export function createMutationToolkit(queryClient: QueryClient) {
         >,
       ) =>
         useMutation(keyGenerator(options?.mutationKey), mutationFn, {
+          context: defaultContext,
           ...defaultOptions,
           ...options,
         }),
@@ -44,7 +46,11 @@ export function createMutationToolkit(queryClient: QueryClient) {
           TMutationFnArgs,
           TContext
         >,
-      ) => useIsMutating(filters || {}, options || {}),
+      ) =>
+        useIsMutating(filters || {}, {
+          context: defaultContext,
+          ...options,
+        }),
     };
 
     return new Proxy(hooks, {
