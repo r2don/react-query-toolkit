@@ -4,6 +4,7 @@ import {
   useQuery,
   useInfiniteQuery,
   useIsFetching,
+  defaultContext,
 } from "react-query";
 import { generateKey } from "./internal/generateKey";
 import { returnByCondition } from "./internal/returnByCondition";
@@ -30,6 +31,7 @@ export function createQueryToolkit(queryClient: QueryClient): QueryCreator {
 
     const handleHooks = (hook: any) => (args?: any, queryOptions?: any) =>
       hook(getKey(queryOptions?.queryKey, args), queryFn(...(args || [])), {
+        context: defaultContext,
         ...defaultOptions,
         ...queryOptions,
       });
@@ -40,7 +42,9 @@ export function createQueryToolkit(queryClient: QueryClient): QueryCreator {
       useQuery: returnOnQuery(handleHooks(useQuery)),
       useInfiniteQuery: returnOnInfiniteQuery(handleHooks(useInfiniteQuery)),
       useIsFetching: (filters) =>
-        useIsFetching(getKey(filters?.queryKey), filters),
+        useIsFetching(getKey(filters?.queryKey), filters, {
+          context: defaultContext,
+        }),
     };
 
     const handleFetchFunctions = (
