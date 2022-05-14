@@ -54,7 +54,7 @@ export function createQueryToolkit(queryClient: QueryClient): QueryCreator {
       conditionalReturnFunc((args: any, options: any) =>
         (queryClient as any)[path](
           getKey(options?.queryKey, args),
-          queryFn(...args),
+          queryFn(...(args || [])),
           { ...defaultOptions, ...options },
         ),
       );
