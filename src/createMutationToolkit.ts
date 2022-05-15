@@ -7,7 +7,7 @@ import {
   UseMutationOptions,
   defaultContext,
 } from "react-query";
-import { MutationFilters } from "react-query/types/core/utils";
+import { MutationFilters } from "react-query/lib/core/utils";
 import { generateKey } from "./internal/generateKey";
 import { MutationToolkit } from "./types/mutationToolkit";
 
