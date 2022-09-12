@@ -15,9 +15,10 @@ import {
   UseInfiniteQueryResult,
   UseQueryOptions,
   UseQueryResult,
-} from "react-query";
-import { QueryState } from "react-query/lib/core/query";
-import { QueryFilters, Updater } from "react-query/lib/core/utils";
+  QueryState,
+  QueryFilters,
+  Updater
+} from "@tanstack/react-query";
 import {
   QueryDefaultOption,
   TQueryFunction,

@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./types",
+    "outDir": "./dist",
     "emitDeclarationOnly": true,
     "declaration": true,
     "baseUrl": "."

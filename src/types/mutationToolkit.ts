@@ -1,5 +1,4 @@
-import { UseMutationOptions, UseMutationResult } from "react-query";
-import { MutationFilters } from "react-query/lib/core/utils";
+import { UseMutationOptions, UseMutationResult, MutationFilters} from "@tanstack/react-query";
 
 export interface MutationToolkit<
   TQueryFnArgs = void,

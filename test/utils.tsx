@@ -1,6 +1,6 @@
 import React from "react";
 import { renderHook } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 

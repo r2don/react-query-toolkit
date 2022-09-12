@@ -1,4 +1,4 @@
-import { MutationKey, QueryKey } from "react-query";
+import { MutationKey, QueryKey } from "@tanstack/react-query";
 
 export function generateKey(baseKey: QueryKey): (key?: QueryKey) => QueryKey;
 export function generateKey(

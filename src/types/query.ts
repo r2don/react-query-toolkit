@@ -3,7 +3,7 @@ import {
   QueryOptions,
   UseInfiniteQueryOptions,
   UseQueryOptions,
-} from "react-query";
+} from "@tanstack/react-query";
 
 export type QueryType = "query" | "infiniteQuery";
 export type TQueryFunction<TQueryFnArgs extends unknown[], TQueryFnReturn> = (

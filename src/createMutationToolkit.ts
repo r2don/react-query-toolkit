@@ -6,8 +6,8 @@ import {
   useMutation,
   UseMutationOptions,
   defaultContext,
-} from "react-query";
-import { MutationFilters } from "react-query/lib/core/utils";
+  MutationFilters
+} from "@tanstack/react-query";
 import { generateKey } from "./internal/generateKey";
 import { MutationToolkit } from "./types/mutationToolkit";
 

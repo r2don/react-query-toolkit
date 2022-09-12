@@ -7,11 +7,14 @@ module.exports = defineConfig({
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "react-query-toolkit",
       fileName: (format) => `index.${format}.js`,
-      formats: ["es", "umd"],
+      formats: ["es", "cjs"],
     },
     minify: "esbuild",
     rollupOptions: {
-      external: ["react", "react-dom", "react-query"],
+      external: ["react", "react-dom", "@tanstack/react-query"],
+      output: {
+        preserveModules: true,
+      },
     },
   },
   test: {

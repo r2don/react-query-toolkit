@@ -5,7 +5,7 @@ import {
   useInfiniteQuery,
   useIsFetching,
   defaultContext,
-} from "react-query";
+} from "@tanstack/react-query";
 import { generateKey } from "./internal/generateKey";
 import { returnByCondition } from "./internal/returnByCondition";
 import { QueryCreator, QueryToolkit } from "./types/queryToolkit";
