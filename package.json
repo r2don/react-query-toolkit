@@ -42,7 +42,7 @@
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
     "@vitejs/plugin-react": "^2.1.0",
-    "@vitest/coverage-c8": "^0.23.2",
+    "@vitest/coverage-c8": "^0.24.3",
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^8.5.0",
     "jsdom": "^20.0.0",
